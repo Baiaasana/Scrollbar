@@ -1,9 +1,7 @@
 package com.example.scrollbar
 
-import android.content.Context
 import android.os.Bundle
-import android.util.Log.d
-import android.widget.SeekBar
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,12 +17,10 @@ class MainActivity : AppCompatActivity() {
         ServiceModel(0, "ავტომატური გადახდები", R.drawable.statistics),
         ServiceModel(1, "შაბლონები", R.drawable.statistics),
         ServiceModel(2, "სტატისტიკა", R.drawable.statistics),
-        ServiceModel(3, "საგადასახადო თულები", R.drawable.statistics),
-        ServiceModel(4, "ავტომატური გადახდები", R.drawable.statistics),
-        ServiceModel(5, "შაბლონები", R.drawable.statistics),
-        ServiceModel(6, "საგადასახადო თულები", R.drawable.statistics),
-        ServiceModel(7, "ავტომატური გადახდები", R.drawable.statistics)
+        ServiceModel(3, "სტატისტიკა", R.drawable.statistics),
+        ServiceModel(4, "სტატისტიკა", R.drawable.statistics)
     )
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,11 +35,21 @@ class MainActivity : AppCompatActivity() {
             adapter = serviceAdapter
             rvServices.addOnScrollListener(scrollListener)
         }
-        seekBar.setOnSeekBarChangeListener(seekBarChangeListener)
         serviceAdapter.submitList(services)
+        rvServices.addItemDecoration(CustomItemDecoration(resources.getDimensionPixelSize(R.dimen.margin_norm)))
+        checkSeekBar()
 
-        val marginStartNorm = resources.getDimensionPixelSize(R.dimen.margin_norm)
-        rvServices.addItemDecoration(CustomItemDecoration(marginStartNorm))
+
+    }
+
+    private fun checkSeekBar() = with(binding) {
+        if (serviceAdapter.currentList.size <= 4) {
+            seekBar.visibility = View.INVISIBLE
+            seekBarBackground.visibility = View.INVISIBLE
+        } else {
+            seekBar.visibility = View.VISIBLE
+            seekBarBackground.visibility = View.VISIBLE
+        }
     }
 
     private var scrollListener = object : RecyclerView.OnScrollListener() {
@@ -58,22 +64,9 @@ class MainActivity : AppCompatActivity() {
                 val scrollX = recyclerView.computeHorizontalScrollOffset()
                 val viewWidth = recyclerView.width - recyclerView.paddingStart - recyclerView.paddingEnd
                 val scrollPercent = (100 * scrollX) / viewWidth
-
                 binding.seekBar.progress = scrollPercent
             }
         }
-    }
-
-    private val seekBarChangeListener = object : SeekBar.OnSeekBarChangeListener {
-        override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-            if (fromUser) {
-                val itemCount = serviceAdapter.itemCount
-                val scrollPosition = progress * itemCount / 100
-                binding.rvServices.scrollToPosition(scrollPosition)
-            }
-        }
-        override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-        override fun onStopTrackingTouch(seekBar: SeekBar?) {}
     }
 }
 

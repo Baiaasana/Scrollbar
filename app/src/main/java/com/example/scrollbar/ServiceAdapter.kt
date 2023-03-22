@@ -10,7 +10,6 @@ import com.example.scrollbar.databinding.CustomServiceItemBinding
 
 class ServiceAdapter :
     ListAdapter<ServiceModel, ServiceAdapter.WalletViewHolder>(ItemCallback) {
-
     inner class WalletViewHolder(private val binding: CustomServiceItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind() {
